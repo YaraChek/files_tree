@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sl-demo-app
+
+
+resources:
+- ../../../base
+
+patcheskey:
+  - ./first_work_directory/ability-between-to-application-tree-patch.yaml
+  - ./first_work_directory/ability-hook-back-crew-pay-customer.yaml
+  - ./first_work_directory/ability_medium_approval_crew.yaml
+  - ./first_work_directory/able_young_v2_customer_sell_patch.yaml
+  - ./first_work_directory/approval_jan_common_buy_buy_customer_patch.yaml
+  - ./first_work_directory/back-riddle-middle-begin-customer-force.yaml
+  - ./first_work_directory/between_front_run_yield.yaml
+  - ./first_work_directory/eagle_end_patch.yaml
+  - ./first_work_directory/end_run_trade_web_under.yaml
+  - ./first_work_directory/follow-force-follow-processor.yaml
+  - ./first_work_directory/follow_force_walk_grand_jewel_v2_patch.yaml
+  - ./first_work_directory/force_bought_able_arc_able.yaml
+  - ./first_work_directory/force_fill_version_noon_patch.yaml
+  - ./first_work_directory/front_application_xpro_xpro_flower_patch.yaml
+  - ./first_work_directory/front_island_amount_patch.yaml
+  - ./first_work_directory/hedgehog_customer_zeal_stand.yaml
+  - ./first_work_directory/ignore_grand_down_work_jan_medium_patch.yaml
+  - ./first_work_directory/ignore_throw.yaml
+  - ./first_work_directory/lead_lead_between_mirror_tree.yaml
+  - ./first_work_directory/light-buy-processor-salesforce-patch.yaml
+  - ./first_work_directory/patch-arc-medium.yaml
+  - ./first_work_directory/patch_lead_follow_ignore_patch.yaml
+  - ./first_work_directory/standard-middle-up-amount.yaml
+  - ./first_work_directory/standard_processor.yaml
+  - ./first_work_directory/stand_tree_patch.yaml
+  - ./first_work_directory/to-customer-proceed-patch.yaml
+  - ./first_work_directory/under-ability-start-front-walkman.yaml
+  - ./first_work_directory/working-between-narrow-eagle.yaml
+  - ./first_work_directory/work-light-stand-young-side-between.yaml
+  - ./first_work_directory/zeal-able-opt-jan-patch.yaml
+  - ./first_work_directory/zeal_able_opt_jan_patch.yaml
+  - ./first_work_directory/zeal-able-opt-jan.yaml
+  - ./first_work_directory/zeal_able_opt_jan.yaml
+
+spec:
+  selector:
+    matchLabels:
+      app: sl-demo-app
+  template:
+    metadata:
+      labels:
+        app: sl-demo-app
+    spec:
+      containers:
+      - name: app
+        image: foo/bar:latest
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP

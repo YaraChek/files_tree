@@ -1,6 +1,6 @@
 # This script renames files in the specified directory.
 Underscores are replaced with dashes. The word “patch” at the end of the name has been removed.
-The script displays information about non-renamed *problematic* files in the terminal and writes to the log file.
+The script displays information about non-renamed *problematic* files in the terminal and writes it to the log file.
 
 -----------------
 

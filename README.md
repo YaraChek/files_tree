@@ -56,10 +56,6 @@ The script displays information about non-renamed *problematic* files in the ter
 12. opt-crew-trade-follow-mirror.yaml
 13. otp-matching-working-able-buy-amount.yaml
 14. payment-stand-opt-between-otp-ability.yaml
-*30.* pay-trade-patch.yaml
-*31.* pay_trade_patch.yaml
-*32.* pay-trade.yaml
-*33.* pay_trade.yaml
 15. pay-ua-commodity-loan.yaml
 16. proceed-working.yaml
 17. salesforce-run-approval-sales-loan.yaml
@@ -75,3 +71,7 @@ The script displays information about non-renamed *problematic* files in the ter
 27. work-ability-tree-between-finance.yaml
 28. workflow-loan-pay-sell.yaml
 29. working-flow-to.yaml
+30. pay-trade-patch.yaml
+31. pay_trade_patch.yaml
+32. pay-trade.yaml
+33. pay_trade.yaml

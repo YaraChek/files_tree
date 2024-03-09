@@ -1,4 +1,6 @@
 # This script renames files in the specified directory.
+***underscore_to_dash.py*** - is the main file.
+*create_files_random_names.py* - is for tests.
 Underscores are replaced with dashes. The word “patch” at the end of the name has been removed.
 The script displays information about non-renamed *problematic* files in the terminal and writes it to the log file.
 

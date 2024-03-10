@@ -1,8 +1,9 @@
-# This script renames files in the specified directory.
-***underscore_to_dash.py*** - is the main file.
-*create_files_random_names.py* - is for tests.
-Underscores are replaced with dashes. The word “patch” at the end of the name has been removed.
-The script displays information about non-renamed *problematic* files in the terminal and writes it to the log file.
+# Scripts for renaming files in the specified directory.
+***underscore_to_dash.py*** - is the main file.  
+  
+*create_files_random_names.py* - a script to create test files by randomly combining a random number (up to six) of words from “words.txt” sometimes adding the words “patch” to the end of the name.  
+Underscores are replaced with dashes. The word “patch” at the end of the name has been removed.  
+The script displays information about non-renamed *problematic* files to the terminal and writes it to the log file.
 
 -----------------
 
@@ -77,3 +78,7 @@ The script displays information about non-renamed *problematic* files in the ter
 31. pay_trade_patch.yaml
 32. pay-trade.yaml
 33. pay_trade.yaml
+
+-----------------
+
+There already exists the file named "pay-trade.yaml" in result directory in our example. Files "pay-trade-patch.yaml", "pay_trade_patch.yaml", "pay_trade.yaml" must be renamed into "pay-trade.yaml". That's why the files won't be proceeded and the information about this will be displayed to the terminal and will be written to the log file.

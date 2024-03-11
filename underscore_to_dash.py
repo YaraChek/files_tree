@@ -7,8 +7,8 @@ Underscores are replaced with dashes. The word “patch” at the end of the nam
 
 import os
 
-PATH = r"${GITHUB_WORKSPACE}/first_work_directory/"
-PATH_TO_LOG = r"${GITHUB_WORKSPACE}/"
+PATH = r"./first_work_directory/"
+PATH_TO_LOG = r"./"
 # PATH = r'/mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/'
 # PATH_TO_LOG = r'/mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/'
 LOGFILE = r'renaming_pass.log'

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sl-demo-app
+
+
+resources:
+- ../../../home
+
+patchesStrategicMerge:
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/account-workflow-approval-lh-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/amount-flow-loan-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/application_approval_sell_salesforce_opt_workflow_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/commodity-patch-riddle-processor-under-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/crew_workflow_account_fee.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/down_side_lh_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/flow-sales-crew-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/forced-start-fee-pay-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/hook-customer-lh-end-able-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/loan_sell_otp_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/mirror-riddle-mambu-finance-begin.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/opt-crew-trade-follow-mirror.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/otp_matching_working_able_buy_amount_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/payment-stand-opt-between-otp-ability.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/pay_ua_commodity_loan_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/proceed-working-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/salesforce_run_approval_sales_loan_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/stab-sell-up-payment-application-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/stab_stab_application_proceed_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/standard_back_sales_front_able.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/throw-archive-begin-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/throw_common.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/ua_able_able_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/under_medium_crew_hook_ua.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/v2-work-sell-pay.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/webhook-customer-loan-arc-standard-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/work-ability-tree-between-finance-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/workflow_loan_pay_sell.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/working_flow_to_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/pay-trade-patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/pay_trade_patch.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/pay-trade.yaml
+  - /mnt/forwork/study/it/projects/something_for_gruzchik_3/files_tree/first_work_directory/pay_trade.yaml
+
+spec:
+  selector:
+    matchLabels:
+      app: sl-demo-app
+  template:
+    metadata:
+      labels:
+        app: sl-demo-app
+    spec:
+      containers:
+      - name: app
+        image: foo/bar:latest
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP

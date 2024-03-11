@@ -32,4 +32,5 @@ jobs:
       run: |
         ls -lha ./
         python ./underscore_to_dash.py
+        tree --matchdirs ./first_work_directory/
       continue-on-error: true

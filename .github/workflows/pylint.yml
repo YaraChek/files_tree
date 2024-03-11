@@ -25,8 +25,10 @@ jobs:
     - name: Run creating of random files
       run: |
         python ./create_files_random_names.py
+        ls -lha ./
+        tree -a ./
       continue-on-error: true
-    - name: Run Gruzchik python script
+    - name: Run python script
       run: |
         python ./underscore_to_dash.py
       continue-on-error: true

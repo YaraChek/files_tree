@@ -50,43 +50,6 @@ def create_filenames(names_number, word_lst):
         filenames.add(filename)
     return filenames
 
-def create_custom_file():
-    """
-    Create custom file with randomly generated files from "second_work_directory".
-    """
-    content = ""
-    content += "apiVersion: apps/v1\n"
-    content += "kind: Deployment\n"
-    content += "metadata:\n"
-    content += "  name: sl-demo-app\n\n\n"
-    content += "resources:\n"
-    content += "- ../../../base\n\n"
-    content += "patcheskey:\n"
-
-    # for i, (author, title) in enumerate(data.items()):
-    # content += f"<td>{i + 1}</td>"
-    # content += f"<td>{author}</td>"
-    # content += f"<td>{title}</td>"
-    content += "\n\nspec:\n"
-    content += "  selector:\n"
-    content += "    matchLabels:\n"
-    content += "      app: sl-demo-app\n"
-    content += "  template:\n"
-    content += "    metadata:\n"
-    content += "      labels:\n"
-    content += "        app: sl-demo-app\n"
-    content += "    spec:\n"
-    content += "      containers:\n"
-    content += "      - name: app\n"
-    content += "        image: foo/bar:latest\n"
-    content += "        ports:\n"
-    content += "        - name: http\n"
-    content += "          containerPort: 8080\n"
-    content += "          protocol: TCP\n"
-
-    final_output = content
-    with open("customiz/customization2.yaml", "w") as output:
-        output.write(final_output)
 
 def main():
     create_directory(PWD, DIRNAME)
@@ -95,7 +58,6 @@ def main():
         words = [line.strip() for line in inf]
 
     create_files(create_filenames(NAMES_NUMBER, words))
-    create_custom_file()
 
 
 if __name__ == '__main__':

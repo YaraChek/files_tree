@@ -22,18 +22,23 @@ jobs:
       run: |
         pylint $(git ls-files '*.py')
       continue-on-error: true
-    - name: Run creating of random files
+    - name: Run creating of first random files
       run: |
         python ./create_files_random_names.py
         ls -lha ./
         tree --matchdirs ./first_work_directory/
-      continue-on-error: true
-    - name: Run Gruzchik python script
+    - name: Run creating of second random files
       run: |
+        python ./second_files_random_names.py
         ls -lha ./
-        python ./files_update.py
+        tree --matchdirs ./second_work_directory/
       continue-on-error: true
-    - name: Run Main python script
+    - name: Run Main python script(first)
       run: |
-        ls -lha ./
         python ./main.py
+        ls -lha ./first_work_directory/
+      continue-on-error: true
+    - name: Run Gruzchik python script(second)
+      run: |
+        python ./files_update.py
+        ls -lha ./second_work_directory/

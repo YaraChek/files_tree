@@ -1,0 +1,35 @@
+name: Pylint
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+    - name: Analysing the code with pylint
+      run: |
+        pylint $(git ls-files '*.py')
+      continue-on-error: true
+    - name: Run creating of random files
+      run: |
+        python ./create_files_random_names.py
+        ls -lha ./
+        tree --matchdirs ./first_work_directory/
+      continue-on-error: true
+    - name: Run python script
+      run: |
+        ls -lha ./
+        python ./underscore_to_dash.py
+      continue-on-error: true

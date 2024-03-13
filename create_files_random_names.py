@@ -7,32 +7,43 @@ Script creates test files by randomly combining a random number (up to six) of w
 
 import random
 import os
+import yaml
 
-NAMES_NUMBER = 30                             # number of files to create
-LABEL = 'patch'                               # a label added randomly
-INDEX_LABEL = -len(LABEL)                     # index for search label
-EXTENSION = 'yaml'                            # extension of creating files
-DIRNAME = 'first_work_directory'              # files will be created in this directory
-PWD = os.getcwd()                             # current directory
-FILES_PATH = '/'.join((PWD, DIRNAME + r'/'))  # path to created files
-WORDS = 'words.txt'                           # file with words for file names
+settings_create_files = './presets/settings_create_files.yaml'
+
+with open(settings_create_files, encoding='utf-8') as presets:
+    config = yaml.load(presets, Loader=yaml.FullLoader)
+
+NAMES_NUMBER = config.get('names-number', 0)               # number of files to create
+LABEL = config.get('label')                                # a label added randomly
+INDEX_LABEL = -len(LABEL)                                  # index for search label
+EXTENSION = config.get('extension')                        # extension of creating files
+DIR_FOR_TEST_FILES = config.get('dirname-for-many-files')  # files will be created in this dir
+DIR_FOR_YAML_FILE = config.get('dirname-for-yaml-files')   # yaml file will be created in this dir
+YAML_FILE_NAME = config.get('yaml-files-name')             # test yaml file
+EXAMPLE_KEY = config.get('example-key')                    # a line in a yaml file followed by a
+                                                           # list of files for processing
+PWD = config.get('pwd')                                    # path to DIR_FOR_TEST_FILES
+CWD = config.get('cwd')                                    # path to DIR_FOR_YAML_FILE
+TEST_FILES_PATH = os.path.join(PWD, DIR_FOR_TEST_FILES)    # path to created files
+WORDS = config.get('words')                                # file with words for file names
 
 
-def create_directory(pwd, dirname):
+def create_directory(pwd: str, dirname: str):
     """   Creating an empty directory at the specified path if it does not exist there.   """
     try:
         os.mkdir(os.path.join(pwd, dirname))
     except FileExistsError:
-        print(f'Directory "{DIRNAME}" already exists')
+        print(f'Directory "{dirname}" already exists')
 
 
-def create_files(names):
+def create_files(names: list):
     """   Creating empty text files in specified directory   """
     for name in names:
         open(name, 'x')
 
 
-def create_filenames(names_number, word_lst):
+def create_filenames(names_number: int, word_lst: list) -> list:
     """
     Create filenames by randomly combining a random number (up to six) of words from
     “words.txt” sometimes adding the words “patch” to the end of the name.
@@ -46,18 +57,66 @@ def create_filenames(names_number, word_lst):
 
         if filename[INDEX_LABEL:] != LABEL and add_patch:
             filename = ''.join((filename, separator, add_patch))
-        filename = ''.join((FILES_PATH, filename, f'.{EXTENSION}'))
+        filename = os.path.join(TEST_FILES_PATH, f'{filename}.{EXTENSION}')
         filenames.add(filename)
-    return filenames
+    return sorted(filenames)
+
+
+def create_yaml_file(filenames: list):
+    """   Creating yaml file with random filenames will be proceeded   """
+
+    template = """apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sl-demo-app
+
+
+resources:
+- ../../../base
+
+patcheskey:
+  - ./test-file-name-1.yaml
+  - ./test-file-name-2.yaml
+
+spec:
+  selector:
+    matchLabels:
+      app: sl-demo-app
+  template:
+    metadata:
+      labels:
+        app: sl-demo-app
+    spec:
+      containers:
+      - name: app
+        image: foo/bar:latest
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+    """
+    fullname = os.path.join(CWD, DIR_FOR_YAML_FILE, YAML_FILE_NAME + f'.{EXTENSION}')
+    with open(fullname, 'w', encoding='utf-8') as ouf:
+        ouf.write(template)
+    with open(fullname, 'r', encoding='utf-8') as inf:
+        to_changes = yaml.load(inf, Loader=yaml.FullLoader)
+    to_changes[EXAMPLE_KEY] = filenames
+    with open(fullname, 'w', encoding='utf-8') as ouf:
+        yaml.dump(to_changes, ouf)
 
 
 def main():
-    create_directory(PWD, DIRNAME)
+    create_directory(PWD, DIR_FOR_TEST_FILES)
+    create_directory(CWD, DIR_FOR_YAML_FILE)
 
     with open(WORDS, 'r', encoding='utf-8') as inf:
         words = [line.strip() for line in inf]
 
-    create_files(create_filenames(NAMES_NUMBER, words))
+    files_for_rename = create_filenames(NAMES_NUMBER, words)
+    create_yaml_file(files_for_rename)
+
+    create_files(files_for_rename)
+
 
 
 if __name__ == '__main__':

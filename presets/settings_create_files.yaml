@@ -1,0 +1,13 @@
+# This file contains presets for the script that generates the test files
+
+names-number: !!int 30                        # number of files to create
+label: patch                                  # a label added randomly
+extension: yaml                               # extension of creating files
+dirname-for-many-files: first_work_directory  # files will be created in this directory
+dirname-for-yaml-files: custom                # yaml file will be created in this directory
+yaml-files-name: customization                # test yaml file
+example-key: patcheskey                       # a line in a yaml file followed by a list of files
+                                              # for processing
+pwd: ./                                       # path to `dirname-for-many-files`
+cwd: ./                                       # path to `dirname-for-yaml-file`
+words: words.txt                              # file with words for file names

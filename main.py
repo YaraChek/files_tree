@@ -14,7 +14,7 @@ import yaml
 
 PATH_TO_RENAMING = r'./first_work_directory/'
 PATH_TO_LOG = r'./'
-PATH_TO_CUSTOM = r'./customiz/'
+PATH_TO_CUSTOM = r'./custom/'
 CUSTOMIZATION_FILE = 'customization.yaml'
 LOGFILE = r'renaming_pass.log'
 

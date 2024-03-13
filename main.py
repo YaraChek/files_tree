@@ -12,16 +12,22 @@ filenames to the end of the file list.
 import os
 import yaml
 
-PATH_TO_RENAMING = r'./first_work_directory/'
-PATH_TO_LOG = r'./'
-PATH_TO_CUSTOM = r'./custom/'
-CUSTOMIZATION_FILE = 'customization.yaml'
-LOGFILE = r'renaming_pass.log'
+settings_file = './presets/settings_rename_files.yaml'
 
-BAD_DELIMITER = '_'
-GOOD_DELIMITER = '-'
-REMOVING_WORD = 'patch'
-EXTENSION = 'yaml'
+with open(settings_file, encoding='utf-8') as presets:
+    config = yaml.load(presets, Loader=yaml.FullLoader)
+
+PATH_TO_RENAMING = config['path-to-renaming']      # path to files to be renamed
+PATH_TO_LOG = config['path-to-log']                # path to log file
+LOGFILE = config['logfile']                        # name of log file
+PATH_TO_CUSTOM = config['path-to-custom']          # path to the yaml file to update
+CUSTOMIZATION_FILE = config['customization-file']  # name of the file to be updated
+
+BAD_DELIMITER = config['bad-delimiter']            # delimiter to be replaced
+GOOD_DELIMITER = config['good-delimiter']          # delimiter for replacement
+REMOVING_WORD = config['removing-word']          # the word at the end of the name has been removed
+EXTENSION = config['extension']
+EXAMPLE_KEY = config['example-key']   # keyword followed by a list of files that need to be updated
 
 
 def create_new_filename(name: str, search: str, index: int) -> str:
@@ -65,35 +71,33 @@ def renaming(old_filenames: list, search: str, index: int) -> dict:
     return was_renamed
 
 
-def change_yaml(path_to_file: str, filename: str, patches_key, was_renamed: dict):
+def change_yaml(path_to_file: str, filename: str, patches_key: str, was_renamed: dict):
     """
     Overwrites yaml-file: renamed old filenames will be deleted from file list,
     new filenames will be added to the end of the file list
     """
     fullname = os.path.join(path_to_file, filename)
     with open(fullname, encoding='utf-8') as inf:
-        config = yaml.load(inf, Loader=yaml.FullLoader)
-    patches = config.get(patches_key)
+        depl = yaml.load(inf, Loader=yaml.FullLoader)
+    patches = depl.get(patches_key)
 
     # delete old filenames from file list
-    config[patches_key] = [elem for elem in patches if elem not in was_renamed]
+    depl[patches_key] = [elem for elem in patches if elem not in was_renamed]
 
     # add new filenames to the end of the file list
     for name in was_renamed:
-        config[patches_key].append(was_renamed[name])
+        depl[patches_key].append(was_renamed[name])
 
     with open(fullname, 'w', encoding='utf-8') as ouf:
-        yaml.dump(config, ouf)
+        yaml.dump(depl, ouf)
 
 
 def main():
-    with open('example_key', encoding='utf-8') as inf:
-        patches_key = inf.read().strip()
     old_names = os.listdir(PATH_TO_RENAMING)
     to_search = '.'.join((REMOVING_WORD, EXTENSION))
     search_index = -len(to_search)
     change_yaml(PATH_TO_CUSTOM, CUSTOMIZATION_FILE,
-                patches_key, renaming(old_names, to_search, search_index))
+                EXAMPLE_KEY, renaming(old_names, to_search, search_index))
 
 
 if __name__ == '__main__':

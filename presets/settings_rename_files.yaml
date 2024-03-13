@@ -1,0 +1,17 @@
+# This file contains presets for the script that renames the test files and proceeded
+# specified yaml file
+
+path-to-renaming: ./first_work_directory/  # path to files to be renamed
+path-to-log: ./                            # path to log file
+logfile: renaming_pass.log                 # name of log file
+path-to-custom: ./custom/                  # path to the yaml file to update
+customization-file: customization.yaml     # name of the file to be updated
+
+bad-delimiter: _                           # delimiter to be replaced
+good-delimiter: "-"                        # delimiter for replacement
+removing-word: patch                   # the word at the end of the name has been removed
+extension: yaml
+
+example-key: patcheskey                # keyword followed by a list of files that need to be updated
+
+

@@ -1,10 +1,14 @@
-# Scripts for renaming files in the specified directory.
+# Scripts for renaming files in the specified directory and update specified file.
 ***main.py*** - is the main file.  
   
 *create_files_random_names.py* - a script to create test files by randomly combining a random number (up to six) of words from “words.txt” sometimes adding the words “patch” to the end of the name.  
+  
 Underscores are replaced with dashes. The word “patch” at the end of the name has been removed.  
-The script displays information about non-renamed *problematic* files to the terminal and writes it to the log file.
-Then it overwrites yaml-file: deletes renamed old filenames from the file list and adds new filenames to the end of the file list.
+The script displays information about non-renamed *problematic* files to the terminal and writes it to the log file.  
+Then it overwrites yaml-file: deletes renamed old filenames from the file list and adds new filenames to the end of the file list.    
+  
+You can customize file generation and renaming by editing the files "settings_create_files.yaml" 
+and "settings_rename_files.yaml", which are located in the "presets" directory.
 
 -----------------
 

@@ -85,7 +85,7 @@ def create_custom_file():
     content += "          protocol: TCP\n"
 
     final_output = content
-    with open("customiz/customization2.yaml", "w") as output:
+    with open("custom/customization2.yaml", "w") as output:
         output.write(final_output)
 
 def main():

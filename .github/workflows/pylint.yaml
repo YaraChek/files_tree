@@ -32,6 +32,7 @@ jobs:
         python ./second_files_random_names.py
         ls -lha ./
         tree --matchdirs ./second_work_directory/
+        cat custom/customization2.yaml
       continue-on-error: true
     - name: Run Main python script(first)
       run: |

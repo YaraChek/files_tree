@@ -38,6 +38,7 @@ jobs:
       run: |
         python ./main.py
         ls -lha ./first_work_directory/
+        cat custom/customization.yaml
       continue-on-error: true
     - name: Run Gruzchik python script(second)
       run: |

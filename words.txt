@@ -50,13 +50,13 @@ original
 otp
 patch
 pay
-payment
+payable
 proceed
 processor
 riddle
 run
 sales
-salesforce
+salesmarket
 sell
 side
 soft

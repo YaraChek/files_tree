@@ -2,8 +2,9 @@
 # specified yaml file
 
 path-to-renaming: ./first_work_directory/  # path to files to be renamed
-path-to-log: ./                            # path to log file
-logfile: renaming_pass.log                 # name of log file
+path-to-log: ./                            # path to log files
+errlogfile: renaming_errors.log            # name of log file for errors
+logfile: renaming.log                      # old file names, new filenames, list of renames
 path-to-custom: ./custom/                  # path to the yaml file to update
 customization-file: customization.yaml     # name of the file to be updated
 

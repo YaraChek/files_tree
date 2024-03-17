@@ -22,7 +22,8 @@ PATH_TO_RENAMING = config['path-to-renaming']      # path to files to be renamed
 PATH_TO_CUSTOM = config['path-to-custom']          # path to the yaml file to update
 CUSTOMIZATION_FILE = config['customization-file']  # name of the file to be updated
 PATH_TO_LOG = config['path-to-log']                # path to log file
-LOGFILE = config['logfile']                        # name of log file
+ERRLOGFILE = config['errlogfile']                  # name of log file for errors
+LOGFILE = config['logfile']                        # old file names, new filenames, list of renames
 
 BAD_DELIMITER = config['bad-delimiter']            # delimiter to be replaced
 GOOD_DELIMITER = config['good-delimiter']          # delimiter for replacement
@@ -62,13 +63,22 @@ def renaming(old_filenames: list, search: str, index: int) -> dict:
                 message = (f'File "{filename}" is not renamed, because file "{new_filename}" '
                            f'is already in "{PATH_TO_RENAMING}"\n')
                 print(message)
-                with open(''.join((PATH_TO_LOG, LOGFILE)), 'a', encoding='utf-8') as ouf:
+                with open(''.join((PATH_TO_LOG, ERRLOGFILE)), 'a', encoding='utf-8') as ouf:
                     print(message, file=ouf)
             else:
                 full_filename = os.path.join(PATH_TO_RENAMING, filename)
                 full_new_filename = os.path.join(PATH_TO_RENAMING, new_filename)
                 was_renamed[full_filename] = full_new_filename
                 os.rename(full_filename, full_new_filename)
+
+    with open(''.join((PATH_TO_LOG, LOGFILE)), 'a', encoding='utf-8') as ouf:
+        print('Files before renaming:', '', '\n'.join(old_filenames), '', sep='\n', file=ouf)
+        print('Files after renaming:', '', '\n'.join(os.listdir(PATH_TO_RENAMING)),
+              '', sep='\n', file=ouf)
+        print('Was renamed:\n', file=ouf)
+        for old, new in was_renamed.items():
+            print(f'{old} ->\n-> {new}\n', file=ouf)
+
     return was_renamed
 
 
@@ -79,7 +89,7 @@ def number_of_spaces_before_dash(row: str) -> int:
         message = (f'Invalid syntax or only one file in "{CUSTOMIZATION_FILE}" after '
                    f'"{EXAMPLE_KEY}"\n')
         print(message)
-        with open(''.join((PATH_TO_LOG, LOGFILE)), 'a', encoding='utf-8') as ouf:
+        with open(''.join((PATH_TO_LOG, ERRLOGFILE)), 'a', encoding='utf-8') as ouf:
             print(message, file=ouf)
     else:
         return index

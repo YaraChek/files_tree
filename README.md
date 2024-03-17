@@ -12,7 +12,7 @@ and "settings_rename_files.yaml", which are located in the "presets" directory.
 
 -----------------
 
-*Example files before ranaming (Attention: the last 4 files are problematic):*
+*Example files before renaming (Attention: the last 4 files are problematic):*
 
 1. ability-between-to-application-tree-patch.yaml
 2. ability-hook-back-crew-pay-customer.yaml

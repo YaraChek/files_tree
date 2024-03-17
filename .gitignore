@@ -1,2 +1,4 @@
 *customization2.yaml
-second_work_directory*
+second_work_directory
+.idea/
+.venv/*

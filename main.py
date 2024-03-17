@@ -10,6 +10,7 @@ filenames to the end of the file list.
 """
 
 import os
+import re
 import yaml
 
 settings_file = './presets/settings_rename_files.yaml'
@@ -27,6 +28,7 @@ BAD_DELIMITER = config['bad-delimiter']            # delimiter to be replaced
 GOOD_DELIMITER = config['good-delimiter']          # delimiter for replacement
 REMOVING_WORD = config['removing-word']          # the word at the end of the name has been removed
 EXTENSION = config['extension']
+EXAMPLE_KEY = config['example-key']   # keyword followed by a list of files that need to be updated
 
 
 def create_new_filename(name: str, search: str, index: int) -> str:
@@ -70,19 +72,76 @@ def renaming(old_filenames: list, search: str, index: int) -> dict:
     return was_renamed
 
 
-def change_yaml(path_to_file: str, filename: str, was_renamed: dict):
+def number_of_spaces_before_dash(row: str) -> int:
+    """ Returns the number of spaces after the `EXAMPLE_KEY` before the dash in the yaml file """
+    index = row.find('-')
+    if index == -1:
+        message = (f'Invalid syntax or only one file in "{CUSTOMIZATION_FILE}" after '
+                   f'"{EXAMPLE_KEY}"\n')
+        print(message)
+        with open(''.join((PATH_TO_LOG, LOGFILE)), 'a', encoding='utf-8') as ouf:
+            print(message, file=ouf)
+    else:
+        return index
+
+
+def division_into_three_parts(lst: list) -> tuple:
+    """ Divides the list into three parts. The middle part is the one that needs to be changed.
+    :returns: first - 1st part of input list
+              third - 3rd part of input list
+              spaces - the number of spaces after the `EXAMPLE_KEY` before the dash in the yaml file
+    """
+    start_index = 0
+    end_index = 0
+
+    for i in range(len(lst)):
+        if lst[i].strip().startswith(f'{EXAMPLE_KEY}'):
+            start_index = i + 1
+            break
+
+    first = lst[:start_index]
+    second = lst[start_index:]
+
+    num_iterations = len(second)
+
+    for i in range(num_iterations):
+        if re.match(r'[a-zA-Z0-9 ]+ *:', second[i].strip()) or i == num_iterations:
+            end_index = start_index + i - 1
+            break
+
+    second = lst[start_index:end_index]
+    third = lst[end_index:]
+    spaces = number_of_spaces_before_dash(second[0])
+    return first, third, spaces
+
+
+def change_yaml(was_renamed: dict):
     """
     Overwrites yaml-file: renamed old filenames will be deleted from file list,
     new filenames will be added to the end of the file list
     """
-    fullname = os.path.join(path_to_file, filename)
-    with open(fullname, 'r', encoding='utf-8') as inf:
+
+    fullname = os.path.join(PATH_TO_CUSTOM, CUSTOMIZATION_FILE)
+
+    with open(fullname, encoding='utf-8') as inf:
+        depl = yaml.load(inf, Loader=yaml.FullLoader)
+    patches = depl.get(EXAMPLE_KEY)
+
+    # delete old filenames from file list
+    depl[EXAMPLE_KEY] = [elem for elem in patches if elem not in was_renamed]
+
+    # add new filenames to the end of the file list
+    for name in was_renamed:
+        depl[EXAMPLE_KEY].append(was_renamed[name])
+
+    with open(fullname, encoding='utf-8') as inf:
         lines = [line.rstrip('\n') for line in inf]
-    for i in range(len(lines)):
-        if lines[i].strip("\'\" -") in was_renamed:
-            lines[i] = lines[i].replace(lines[i].strip("\'\" -"),
-                                        was_renamed[lines[i].strip("\'\" -")])
-    text = '\n'.join(lines)
+
+    before, after, spaces = division_into_three_parts(lines)
+
+    middle = [''.join((' ' * spaces, '- ', elem)) for elem in depl[EXAMPLE_KEY]]
+
+    text = '\n'.join(before + middle + after)
     with open(fullname, 'w', encoding='utf-8') as outf:
         outf.write(text)
 
@@ -91,7 +150,7 @@ def main():
     old_names = os.listdir(PATH_TO_RENAMING)
     to_search = '.'.join((REMOVING_WORD, EXTENSION))
     search_index = -len(to_search)
-    change_yaml(PATH_TO_CUSTOM, CUSTOMIZATION_FILE, renaming(old_names, to_search, search_index))
+    change_yaml(renaming(old_names, to_search, search_index))
 
 
 if __name__ == '__main__':

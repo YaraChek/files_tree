@@ -82,19 +82,6 @@ def renaming(old_filenames: list, search: str, index: int) -> dict:
     return was_renamed
 
 
-def number_of_spaces_before_dash(row: str) -> int:
-    """ Returns the number of spaces after the `EXAMPLE_KEY` before the dash in the yaml file """
-    index = row.find('-')
-    if index == -1:
-        message = (f'Invalid syntax or only one file in "{CUSTOMIZATION_FILE}" after '
-                   f'"{EXAMPLE_KEY}"\n')
-        print(message)
-        with open(''.join((PATH_TO_LOG, ERRLOGFILE)), 'a', encoding='utf-8') as ouf:
-            print(message, file=ouf)
-    else:
-        return index
-
-
 def division_into_three_parts(lst: list) -> tuple:
     """ Divides the list into three parts. The middle part is the one that needs to be changed.
     :returns: first - 1st part of input list
@@ -114,46 +101,52 @@ def division_into_three_parts(lst: list) -> tuple:
 
     num_iterations = len(second)
 
+    # the keyword search to define the end of the list
     for i in range(num_iterations):
         if re.match(r'[a-zA-Z0-9 ]+ *:', second[i].strip()) or i == num_iterations:
-            end_index = start_index + i - 1
+            end_index = start_index + i
             break
 
     second = lst[start_index:end_index]
-    third = lst[end_index:]
-    spaces = number_of_spaces_before_dash(second[0])
-    return first, third, spaces
+
+    third = list()
+
+    # move all spaces from the end of the list to the beginning of the next block
+    for i in range(len(second) - 1, -1, -1):
+        if second[i].strip():
+            break
+        else:
+            third.append(second.pop())
+
+    third.extend(lst[end_index:])
+    return first, second, third
 
 
-def change_yaml(was_renamed: dict):
+def change_yaml(renamed: dict):
     """
     Overwrites yaml-file: renamed old filenames will be deleted from file list,
     new filenames will be added to the end of the file list
     """
-
     fullname = os.path.join(PATH_TO_CUSTOM, CUSTOMIZATION_FILE)
+    fullname_backup = fullname + '.backup'
 
-    with open(fullname, encoding='utf-8') as inf:
-        depl = yaml.load(inf, Loader=yaml.FullLoader)
-    patches = depl.get(EXAMPLE_KEY)
+    os.rename(fullname, fullname_backup)
 
-    # delete old filenames from file list
-    depl[EXAMPLE_KEY] = [elem for elem in patches if elem not in was_renamed]
-
-    # add new filenames to the end of the file list
-    for name in was_renamed:
-        depl[EXAMPLE_KEY].append(was_renamed[name])
-
-    with open(fullname, encoding='utf-8') as inf:
+    with open(fullname_backup, encoding='utf-8') as inf:
         lines = [line.rstrip('\n') for line in inf]
 
-    before, after, spaces = division_into_three_parts(lines)
+    before, middle, after = division_into_three_parts(lines)
 
-    middle = [''.join((' ' * spaces, '- ', elem)) for elem in depl[EXAMPLE_KEY]]
+    not_renamed = [line for line in middle if line.strip("\'\" -") not in renamed]
+
+    was_renamed = [line.replace(line.strip("\'\" -"), renamed[line.strip("\'\" -")])
+                   for line in middle if line.strip("\'\" -") in renamed]
+
+    middle = not_renamed + was_renamed
 
     text = '\n'.join(before + middle + after)
-    with open(fullname, 'w', encoding='utf-8') as outf:
-        outf.write(text)
+    with open(fullname, 'w', encoding='utf-8') as ouf:
+        ouf.write(text)
 
 
 def main():

@@ -62,10 +62,10 @@ def create_filenames(names_number: int, word_lst: list) -> list:
     return sorted(filenames)
 
 
-def create_yaml_file(filenames: list):
+def create_yaml_file():
     """   Creating yaml file with random filenames will be proceeded   """
 
-    template = """apiVersion: apps/v1
+    template_begin = f"""apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sl-demo-app
@@ -74,10 +74,12 @@ metadata:
 resources:
 - ../../../base
 
-patcheskey:
-  - ./test-file-name-1.yaml
-  - ./test-file-name-2.yaml
+{EXAMPLE_KEY}:"""
 
+    template_middle = '\n'.join((os.path.join(TEST_FILES_PATH, name)
+                                 for name in os.listdir(TEST_FILES_PATH)))
+
+    template_end = """
 spec:
   selector:
     matchLabels:
@@ -94,15 +96,11 @@ spec:
         - name: http
           containerPort: 8080
           protocol: TCP
-    """
+"""
+
     fullname = os.path.join(CWD, DIR_FOR_YAML_FILE, YAML_FILE_NAME + f'.{EXTENSION}')
-    with open(fullname, 'w', encoding='utf-8') as ouf:
-        ouf.write(template)
-    with open(fullname, 'r', encoding='utf-8') as inf:
-        to_changes = yaml.load(inf, Loader=yaml.FullLoader)
-    to_changes[EXAMPLE_KEY] = filenames
-    with open(fullname, 'w', encoding='utf-8') as ouf:
-        yaml.dump(to_changes, ouf)
+    with open(fullname, 'w') as ouf:
+        ouf.write('\n'.join((template_begin, template_middle, template_end)))
 
 
 def main():
@@ -113,10 +111,8 @@ def main():
         words = [line.strip() for line in inf]
 
     files_for_rename = create_filenames(NAMES_NUMBER, words)
-    create_yaml_file(files_for_rename)
-
     create_files(files_for_rename)
-
+    create_yaml_file()
 
 
 if __name__ == '__main__':

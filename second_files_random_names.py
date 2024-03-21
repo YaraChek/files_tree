@@ -33,7 +33,7 @@ def create_directory(pwd, dirname):
 def create_files(names):
     """   Creating empty text files in specified directory   """
     for name in names:
-        open(name, 'x')
+        open(os.path.join(FILES_PATH, name), 'x')
 
 
 def create_filenames(names_number, word_lst):
@@ -50,8 +50,10 @@ def create_filenames(names_number, word_lst):
 
         if filename[INDEX_LABEL:] != LABEL and add_patch:
             filename = ''.join((filename, separator, add_patch))
+        filen = f'./{filename}.{EXTENSION}'
         filename = os.path.join(FILES_PATH, f'{filename}.{EXTENSION}')
-        filenames.add(filename)
+        filenames.add(filen)
+
     return sorted(filenames)
 
 def create_custom_file(filenames: list):
@@ -66,9 +68,12 @@ def create_custom_file(filenames: list):
     content += "resources:\n"
     content += "- ../../../base\n\n"
     content += "patcheskey:\n"
+    content += "- ./test_123_path.yaml\n"
 
     content += yaml.safe_dump(filenames)
 
+    content += "- ./test-123-path.yaml\n"
+    content += "- ./test-321.yaml\n"
     content += "\nspec:\n"
     content += "  selector:\n"
     content += "    matchLabels:\n"

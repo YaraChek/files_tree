@@ -1,5 +1,7 @@
 import os
 import yaml
+import re
+# import ruamel.yaml
 
 DIRNAME = r"./second_work_directory"
 
@@ -37,58 +39,98 @@ def rename_files(folder):
         new_list.append(fDestination)
 
     res = os.listdir(folder)
-    print(sorted(new_list))
+    # print(sorted(new_list))
     return sorted(new_list)
 
+def split_text(lst):
+    start_index = 0
+    end_index = 0
+
+    for i in range(len(lst)):
+
+        if lst[i].strip().startswith(f'patcheskey'):
+            start_index = i + 1
+            break
+
+    first = lst[:start_index]
+    second = lst[start_index:]
+
+    num_iterations = len(second)
+
+    # the keyword search to define the end of the list
+    for i in range(num_iterations):
+        if re.match(r'[a-zA-Z0-9 ]+ *:', second[i].strip()) or i == num_iterations:
+            end_index = start_index + i
+            break
+
+    second = lst[start_index:end_index]
+
+    third = list()
+
+    # move all spaces from the end of the list to the beginning of the next block
+    for i in range(len(second) - 1, -1, -1):
+        if second[i].strip():
+            break
+        else:
+            third.append(second.pop())
+
+    third.extend(lst[end_index:])
+    return first, second, third
+
 def rename_strings_settings(list_new_names):
-    # print("\n"+str(list_new_names))
     count = 0
     updated_list = list()
     not_updated_list = list()
 
+    fullname = os.path.join("custom/customization2.yaml")
+    fullname_backup = fullname + '.back'
+
+    os.rename(fullname, fullname_backup)
+
+    with open(fullname_backup, 'r') as listfile:
+        lines = [line.rstrip('\n') for line in listfile]
+        # print(lines)
+
+    if len(lines) != 0:
+        starttext, full_list, endtext = split_text(lines)
+    else:
+        print("lines value is empty, please fix")
+        exit()
+
     # Read the YAML file
-    with open("custom/customization2.yaml", "r") as output:
+    with open(fullname_backup, "r") as output:
         data = yaml.safe_load(output)
-        print("\n outdated data: \n")
-        print(data['patcheskey'])
 
-        for itemdata in data['patcheskey']:
+        # full_list = data['patcheskey']
 
-            for item in list_new_names:
-                itemdata_file = os.path.split(itemdata)[1]
-                correct_itemdata = make_corrections(itemdata_file,DIRNAME)
-                fDestination = "{}/{}".format(DIRNAME, correct_itemdata)
-                print("/n")
-                print(item)
-                print(itemdata)
-                count=count+1
-                if item == fDestination:
-                    print("\n {} identical: ".format(count))
-                    # print(item)
-                    # print(fDestination)
-                    # Rename the list
-                    updated_list.append(fDestination)
-                    break
+        for itemdata in full_list:
 
-                else:
-                    print("\n {} not identical: ".format(count))
-                    print(item)
-                    print(fDestination)
-                    not_updated_list.append(fDestination)
+            itemdata_file = os.path.split(itemdata)[1]
+            correct_itemdata = make_corrections(itemdata_file,DIRNAME)
+            fDestination = "{}/{}".format(DIRNAME, correct_itemdata)
+            count=count+1
+
+            if fDestination in list_new_names:
+                print("\n {} identical: ".format(count))
+                print(fDestination)
+                # Add to the list
+                updated_list.append(f"- {fDestination}")
+
+            else:
+                print("\n {} not identical: ".format(count))
+                print(fDestination)
+                not_updated_list.append(itemdata)
 
     final_list = not_updated_list + updated_list
-    print(f"updated list: \n {final_list}")
-    print(yaml.safe_dump(final_list))
+    print(f"updated list: \n {starttext} {final_list} {endtext}")
+    newfile = '\n'.join(starttext + final_list + endtext)
 
+    with open('custom/customization2.yaml', 'w', encoding='utf-8') as file:
+        file.write(str(newfile))
 
+    if os.path.isfile(fullname_backup):
+        os.remove(fullname_backup)
 
-
-    # # Identify the list to be renamed and sorted
-    # list_to_rename = data['patcheskey']
-
-    # # Rename the list
-    # data['new_list'] = list_to_rename
-    # data.pop('old_list')
 
 
 if __name__ == '__main__':

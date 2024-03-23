@@ -80,7 +80,7 @@ resources:
 
     processed = {'  - ./' + name for name in os.listdir(TEST_FILES_PATH)}
 
-    template_middle = '\n'.join(not_processed | processed)
+    template_middle = '\n'.join(sorted(not_processed | processed))
 
     template_end = """
 spec:

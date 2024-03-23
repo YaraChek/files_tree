@@ -4,6 +4,8 @@ import re
 # import ruamel.yaml
 
 DIRNAME = r"./second_work_directory"
+SORTINGNAME = "patcheskey"
+CONFIGFILE = "custom/customization2.yaml"
 
 def make_corrections(filename,folder):
         # Rename file with a patterns in name, and replace underscore with a dush
@@ -48,7 +50,7 @@ def split_text(lst):
 
     for i in range(len(lst)):
 
-        if lst[i].strip().startswith(f'patcheskey'):
+        if lst[i].strip().startswith(f'{SORTINGNAME}'):
             start_index = i + 1
             break
 
@@ -82,7 +84,7 @@ def rename_strings_settings(list_new_names):
     updated_list = list()
     not_updated_list = list()
 
-    fullname = os.path.join("custom/customization2.yaml")
+    fullname = os.path.join(CONFIGFILE)
     fullname_backup = fullname + '.back'
 
     os.rename(fullname, fullname_backup)
@@ -101,7 +103,7 @@ def rename_strings_settings(list_new_names):
     with open(fullname_backup, "r") as output:
         data = yaml.safe_load(output)
 
-        # full_list = data['patcheskey']
+        # full_list = data["{SORTINGNAME}"]
 
         for itemdata in full_list:
 
@@ -125,7 +127,7 @@ def rename_strings_settings(list_new_names):
     print(f"updated list: \n {starttext} {final_list} {endtext}")
     newfile = '\n'.join(starttext + final_list + endtext)
 
-    with open('custom/customization2.yaml', 'w', encoding='utf-8') as file:
+    with open(CONFIGFILE, 'w', encoding='utf-8') as file:
         file.write(str(newfile))
 
     if os.path.isfile(fullname_backup):

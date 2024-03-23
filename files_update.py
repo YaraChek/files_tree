@@ -4,37 +4,40 @@ import re
 # import ruamel.yaml
 
 DIRNAME = r"./second_work_directory"
+SORTINGNAME = "patcheskey"
+CONFIGFILE = "custom/customization2.yaml"
 
 def make_corrections(filename,folder):
-        # Rename file with a patterns in name, and replace underscore with a dush
+        # Make correction to filenames with a patterns in name, and replace underscore with a dush
         suffixName1 = filename.replace ("_", "-")
         suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
         newName = suffixName2.replace (".patch.yaml", ".yaml")
 
-        fDestination = "{}/{}".format(folder, newName)
         # print(newName)
         return newName
 
 
 def rename_files(folder):
+    # Rename files in subfolder DIRNAME with a patterns in make_corrections
+
     counter = 0
     new_list = list()
     # Iterate
     for file in os.listdir(folder):
-        # Rename file with a patterns in name, and replace underscore with a dush
-        suffixName1 = file.replace ("_", "-")
-        suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
-        newName = suffixName2.replace (".patch.yaml", ".yaml")
+
+        correct_filename = make_corrections(file,DIRNAME)
+
         counter=counter+1
         print("{}. old file: {}".format(counter, file))
-        print("{}. new file: {}\n".format(counter, newName))
+        print("{}. new file: {}\n".format(counter, correct_filename))
 
         # Rename the file
         fSource = "{}/{}".format(folder, file)
         # print(fSource)
-        fDestination = "{}/{}".format(folder, newName)
+        fDestination = "{}/{}".format(folder, correct_filename)
         # print(fDestination)
         os.rename(fSource, fDestination)
+
         # print(file)
         new_list.append(fDestination)
 
@@ -48,7 +51,7 @@ def split_text(lst):
 
     for i in range(len(lst)):
 
-        if lst[i].strip().startswith(f'patcheskey'):
+        if lst[i].strip().startswith(f'{SORTINGNAME}'):
             start_index = i + 1
             break
 
@@ -82,7 +85,7 @@ def rename_strings_settings(list_new_names):
     updated_list = list()
     not_updated_list = list()
 
-    fullname = os.path.join("custom/customization2.yaml")
+    fullname = os.path.join(CONFIGFILE)
     fullname_backup = fullname + '.back'
 
     os.rename(fullname, fullname_backup)
@@ -101,7 +104,7 @@ def rename_strings_settings(list_new_names):
     with open(fullname_backup, "r") as output:
         data = yaml.safe_load(output)
 
-        # full_list = data['patcheskey']
+        # full_list = data["{SORTINGNAME}"]
 
         for itemdata in full_list:
 
@@ -125,7 +128,7 @@ def rename_strings_settings(list_new_names):
     print(f"updated list: \n {starttext} {final_list} {endtext}")
     newfile = '\n'.join(starttext + final_list + endtext)
 
-    with open('custom/customization2.yaml', 'w', encoding='utf-8') as file:
+    with open(CONFIGFILE, 'w', encoding='utf-8') as file:
         file.write(str(newfile))
 
     if os.path.isfile(fullname_backup):

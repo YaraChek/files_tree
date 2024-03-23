@@ -23,7 +23,6 @@ PATH_TO_CUSTOM = config['path-to-custom']          # path to the yaml file to up
 CUSTOMIZATION_FILE = config['customization-file']  # name of the file to be updated
 PATH_TO_LOG = config['path-to-log']                # path to log file
 ERRLOGFILE = config['errlogfile']                  # name of log file for errors
-LOGFILE = config['logfile']                        # old file names, new filenames, list of renames
 
 BAD_DELIMITER = config['bad-delimiter']            # delimiter to be replaced
 GOOD_DELIMITER = config['good-delimiter']          # delimiter for replacement
@@ -55,8 +54,9 @@ def renaming(old_filenames: list, search: str, index: int) -> dict:
     :param index: the index from which the word to be removed begins
     :return: the renaming dictionary
     """
-    was_renamed = dict()
+    viewed = dict()
     for filename in old_filenames:
+        full_filename = os.path.join(PATH_TO_RENAMING, filename)
         if BAD_DELIMITER in filename or filename[index:] == search:
             new_filename = create_new_filename(filename, search, index)
             if new_filename in old_filenames:
@@ -66,20 +66,19 @@ def renaming(old_filenames: list, search: str, index: int) -> dict:
                 with open(''.join((PATH_TO_LOG, ERRLOGFILE)), 'a', encoding='utf-8') as ouf:
                     print(message, file=ouf)
             else:
-                full_filename = os.path.join(PATH_TO_RENAMING, filename)
                 full_new_filename = os.path.join(PATH_TO_RENAMING, new_filename)
-                was_renamed[full_filename] = full_new_filename
+                viewed[filename] = full_new_filename
                 os.rename(full_filename, full_new_filename)
+        else:
+            viewed[filename] = full_filename
 
-    with open(''.join((PATH_TO_LOG, LOGFILE)), 'a', encoding='utf-8') as ouf:
-        print('Files before renaming:', '', '\n'.join(old_filenames), '', sep='\n', file=ouf)
-        print('Files after renaming:', '', '\n'.join(os.listdir(PATH_TO_RENAMING)),
-              '', sep='\n', file=ouf)
-        print('Was renamed:\n', file=ouf)
-        for old, new in was_renamed.items():
-            print(f'{old} ->\n-> {new}\n', file=ouf)
+    print('Files before renaming:', '', '\n'.join(old_filenames), '', sep='\n')
+    print('Files after renaming:', '', '\n'.join(os.listdir(PATH_TO_RENAMING)), '', sep='\n')
+    print('Was renamed:\n')
+    for old, new in viewed.items():
+        print(f'{old} ->\n-> {new}\n')
 
-    return was_renamed
+    return viewed
 
 
 def division_into_three_parts(lst: list) -> tuple:
@@ -122,27 +121,24 @@ def division_into_three_parts(lst: list) -> tuple:
     return first, second, third
 
 
-def change_yaml(renamed: dict):
+def change_yaml(processed: dict):
     """
     Overwrites yaml-file: renamed old filenames will be deleted from file list,
     new filenames will be added to the end of the file list
     """
     fullname = os.path.join(PATH_TO_CUSTOM, CUSTOMIZATION_FILE)
-    fullname_backup = fullname + '.backup'
 
-    os.rename(fullname, fullname_backup)
-
-    with open(fullname_backup, encoding='utf-8') as inf:
+    with open(fullname, encoding='utf-8') as inf:
         lines = [line.rstrip('\n') for line in inf]
 
     before, middle, after = division_into_three_parts(lines)
 
-    not_renamed = [line for line in middle if line.strip("\'\" -") not in renamed]
+    not_processed = [line for line in middle if line.strip("\'\" -/.") not in processed]
 
-    was_renamed = [line.replace(line.strip("\'\" -"), renamed[line.strip("\'\" -")])
-                   for line in middle if line.strip("\'\" -") in renamed]
+    was_processed = [line.replace(line.strip("\'\" -"), processed[line.strip("\'\" -/.")])
+                     for line in middle if line.strip("\'\" -/.") in processed]
 
-    middle = not_renamed + was_renamed
+    middle = not_processed + was_processed
 
     text = '\n'.join(before + middle + after)
     with open(fullname, 'w', encoding='utf-8') as ouf:

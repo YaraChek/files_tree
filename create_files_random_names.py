@@ -76,8 +76,7 @@ resources:
 
 {EXAMPLE_KEY}:"""
 
-    template_middle = '\n'.join((os.path.join(TEST_FILES_PATH, name)
-                                 for name in os.listdir(TEST_FILES_PATH)))
+    template_middle = '\n'.join(('  - ./' + name for name in os.listdir(TEST_FILES_PATH)))
 
     template_end = """
 spec:

@@ -62,7 +62,7 @@ def create_filenames(names_number: int, word_lst: list) -> list:
     return sorted(filenames)
 
 
-def create_yaml_file():
+def create_yaml_file(ballast):
     """   Creating yaml file with random filenames will be proceeded   """
 
     template_begin = f"""apiVersion: apps/v1
@@ -76,7 +76,11 @@ resources:
 
 {EXAMPLE_KEY}:"""
 
-    template_middle = '\n'.join(('  - ./' + name for name in os.listdir(TEST_FILES_PATH)))
+    not_processed = {'  - ' + name for name in ballast}
+
+    processed = {'  - ./' + name for name in os.listdir(TEST_FILES_PATH)}
+
+    template_middle = '\n'.join(not_processed | processed)
 
     template_end = """
 spec:
@@ -110,8 +114,10 @@ def main():
         words = [line.strip() for line in inf]
 
     files_for_rename = create_filenames(NAMES_NUMBER, words)
+    files_for_ballast = [name.replace(f'./{DIR_FOR_TEST_FILES}', '.')
+                         for name in create_filenames(NAMES_NUMBER // 2, words)]
     create_files(files_for_rename)
-    create_yaml_file()
+    create_yaml_file(files_for_ballast)
 
 
 if __name__ == '__main__':

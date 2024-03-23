@@ -8,35 +8,36 @@ SORTINGNAME = "patcheskey"
 CONFIGFILE = "custom/customization2.yaml"
 
 def make_corrections(filename,folder):
-        # Rename file with a patterns in name, and replace underscore with a dush
+        # Make correction to filenames with a patterns in name, and replace underscore with a dush
         suffixName1 = filename.replace ("_", "-")
         suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
         newName = suffixName2.replace (".patch.yaml", ".yaml")
 
-        fDestination = "{}/{}".format(folder, newName)
         # print(newName)
         return newName
 
 
 def rename_files(folder):
+    # Rename files in subfolder DIRNAME with a patterns in make_corrections
+
     counter = 0
     new_list = list()
     # Iterate
     for file in os.listdir(folder):
-        # Rename file with a patterns in name, and replace underscore with a dush
-        suffixName1 = file.replace ("_", "-")
-        suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
-        newName = suffixName2.replace (".patch.yaml", ".yaml")
+
+        correct_filename = make_corrections(file,DIRNAME)
+
         counter=counter+1
         print("{}. old file: {}".format(counter, file))
-        print("{}. new file: {}\n".format(counter, newName))
+        print("{}. new file: {}\n".format(counter, correct_filename))
 
         # Rename the file
         fSource = "{}/{}".format(folder, file)
         # print(fSource)
-        fDestination = "{}/{}".format(folder, newName)
+        fDestination = "{}/{}".format(folder, correct_filename)
         # print(fDestination)
         os.rename(fSource, fDestination)
+
         # print(file)
         new_list.append(fDestination)
 

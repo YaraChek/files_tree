@@ -7,7 +7,7 @@ DIRNAME = r"./second_work_directory"
 SORTINGNAME = "patcheskey"
 CONFIGFILE = "custom/customization2.yaml"
 
-def make_corrections(filename,folder):
+def make_corrections(filename):
         # Make correction to filenames with a patterns in name, and replace underscore with a dush
         suffixName1 = filename.replace ("_", "-")
         suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
@@ -25,7 +25,7 @@ def rename_files(folder):
     # Iterate
     for file in os.listdir(folder):
 
-        correct_filename = make_corrections(file,DIRNAME)
+        correct_filename = make_corrections(file)
 
         counter=counter+1
         print("{}. old file: {}".format(counter, file))
@@ -39,7 +39,6 @@ def rename_files(folder):
         os.rename(fSource, fDestination)
 
         # print(file)
-        # new_list.append(fDestination.rsplit('/', 2)[2])
         new_list.append(os.path.basename(fDestination).split('/')[-1])
 
     # res = os.listdir(folder)

@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+"""
+This file work with files location and listing of the file. With this script its possible
+to update the names of the files in folder and also compare and update names in config
+"""
+
 import os
 import yaml
 import re
@@ -8,13 +14,13 @@ SORTINGNAME = "patcheskey"
 CONFIGFILE = "custom/customization2.yaml"
 
 def make_corrections(filename):
-        # Make correction to filenames with a patterns in name, and replace underscore with a dush
-        suffixName1 = filename.replace ("_", "-")
-        suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
-        newName = suffixName2.replace (".patch.yaml", ".yaml")
+    # Make correction to filenames with a patterns in name, and replace underscore with a dush
+    suffixName1 = filename.replace ("_", "-")
+    suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
+    newName = suffixName2.replace (".patch.yaml", ".yaml")
 
-        # print(f"renamed file: - {newName}")
-        return newName
+    # print(f"renamed file: - {newName}")
+    return newName
 
 
 def rename_files(folder):
@@ -138,7 +144,6 @@ def rename_strings_settings(list_new_names):
 
     if os.path.isfile(fullname_backup):
         os.remove(fullname_backup)
-
 
 
 if __name__ == '__main__':

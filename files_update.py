@@ -13,7 +13,7 @@ def make_corrections(filename,folder):
         suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
         newName = suffixName2.replace (".patch.yaml", ".yaml")
 
-        # print(newName)
+        # print(f"renamed file: - {newName}")
         return newName
 
 
@@ -39,10 +39,12 @@ def rename_files(folder):
         os.rename(fSource, fDestination)
 
         # print(file)
-        new_list.append(fDestination)
+        # new_list.append(fDestination.rsplit('/', 2)[2])
+        new_list.append(os.path.basename(fDestination).split('/')[-1])
 
-    res = os.listdir(folder)
-    # print(sorted(new_list))
+    # res = os.listdir(folder)
+    print("new list: \n")
+    print(new_list)
     return sorted(new_list)
 
 def split_text(lst):
@@ -105,27 +107,31 @@ def rename_strings_settings(list_new_names):
         data = yaml.safe_load(output)
 
         # full_list = data["{SORTINGNAME}"]
+        print(f"print_full_list: \n {full_list}")
+
+        print(f"print_list_names: \n {list_new_names}")
 
         for itemdata in full_list:
 
-            itemdata_file = os.path.split(itemdata)[1]
-            correct_itemdata = make_corrections(itemdata_file,DIRNAME)
-            fDestination = "{}/{}".format(DIRNAME, correct_itemdata)
+            correct_itemdata = make_corrections(itemdata)
+            fDestination = correct_itemdata
             count=count+1
 
-            if fDestination in list_new_names:
+            if fDestination.strip("\'\" -/.") in list_new_names:
                 print("\n {} identical: ".format(count))
                 print(fDestination)
                 # Add to the list
-                updated_list.append(f"- {fDestination}")
-
+                filepatch = DIRNAME.rsplit('/', 1)[1]
+                print(f" filepatch: {filepatch}")
+                fixedline = fDestination.replace(fDestination.strip("\'\" -/."), filepatch+"/"+fDestination.strip("\'\" -/."))
+                updated_list.append(fixedline)
             else:
                 print("\n {} not identical: ".format(count))
                 print(fDestination)
                 not_updated_list.append(itemdata)
 
     final_list = not_updated_list + updated_list
-    print(f"updated list: \n {starttext} {final_list} {endtext}")
+    print(f"updated list: \n {final_list}")
     newfile = '\n'.join(starttext + final_list + endtext)
 
     with open(CONFIGFILE, 'w', encoding='utf-8') as file:

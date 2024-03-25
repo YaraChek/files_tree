@@ -54,7 +54,7 @@ def renaming(old_filenames: list, search: str, index: int) -> dict:
     :param index: the index from which the word to be removed begins
     :return: the renaming dictionary
     """
-    viewed = dict()
+    viewed = {}
     for filename in old_filenames:
         full_filename = os.path.join(PATH_TO_RENAMING, filename)
         if BAD_DELIMITER in filename or filename[index:] == search:
@@ -127,6 +127,10 @@ def change_yaml(processed: dict):
     new filenames will be added to the end of the file list
     """
     fullname = os.path.join(PATH_TO_CUSTOM, CUSTOMIZATION_FILE)
+
+    # keep only the last directory in the relative file names
+    processed = {old: '/'.join(('.', '/'.join(processed[old].split('/')[-2:])))
+                 for old, new in processed.items()}
 
     with open(fullname, encoding='utf-8') as inf:
         lines = [line.rstrip('\n') for line in inf]

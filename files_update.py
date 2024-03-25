@@ -132,7 +132,7 @@ def rename_strings_settings(list_new_names):
                 fixedline = fDestination.replace(fDestination.strip("\'\" -/."), filepatch+"/"+fDestination.strip("\'\" -/."))
                 updated_list.append(fixedline)
             else:
-                print(f"\n {count} not identical: "))
+                print(f"\n {count} not identical: ")
                 print(fDestination)
                 not_updated_list.append(itemdata)
 

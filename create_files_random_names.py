@@ -40,7 +40,7 @@ def create_directory(pwd: str, dirname: str):
 def create_files(names: list):
     """   Creating empty text files in specified directory   """
     for name in names:
-        open(name, 'x')
+        open(name, 'x', encoding='utf-8').write(name)
 
 
 def create_filenames(names_number: int, word_lst: list) -> list:
@@ -102,7 +102,7 @@ spec:
 """
 
     fullname = os.path.join(CWD, DIR_FOR_YAML_FILE, YAML_FILE_NAME + f'.{EXTENSION}')
-    with open(fullname, 'w') as ouf:
+    with open(fullname, 'w', encoding='utf-8') as ouf:
         ouf.write('\n'.join((template_begin, template_middle, template_end)))
 
 

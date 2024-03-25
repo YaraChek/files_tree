@@ -4,42 +4,46 @@ import re
 # import ruamel.yaml
 
 DIRNAME = r"./second_work_directory"
+SORTINGNAME = "patcheskey"
+CONFIGFILE = "custom/customization2.yaml"
 
-def make_corrections(filename,folder):
-        # Rename file with a patterns in name, and replace underscore with a dush
+def make_corrections(filename):
+        # Make correction to filenames with a patterns in name, and replace underscore with a dush
         suffixName1 = filename.replace ("_", "-")
         suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
         newName = suffixName2.replace (".patch.yaml", ".yaml")
 
-        fDestination = "{}/{}".format(folder, newName)
-        # print(newName)
+        # print(f"renamed file: - {newName}")
         return newName
 
 
 def rename_files(folder):
+    # Rename files in subfolder DIRNAME with a patterns in make_corrections
+
     counter = 0
     new_list = list()
     # Iterate
     for file in os.listdir(folder):
-        # Rename file with a patterns in name, and replace underscore with a dush
-        suffixName1 = file.replace ("_", "-")
-        suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
-        newName = suffixName2.replace (".patch.yaml", ".yaml")
+
+        correct_filename = make_corrections(file)
+
         counter=counter+1
         print("{}. old file: {}".format(counter, file))
-        print("{}. new file: {}\n".format(counter, newName))
+        print("{}. new file: {}\n".format(counter, correct_filename))
 
         # Rename the file
         fSource = "{}/{}".format(folder, file)
         # print(fSource)
-        fDestination = "{}/{}".format(folder, newName)
+        fDestination = "{}/{}".format(folder, correct_filename)
         # print(fDestination)
         os.rename(fSource, fDestination)
-        # print(file)
-        new_list.append(fDestination)
 
-    res = os.listdir(folder)
-    # print(sorted(new_list))
+        # print(file)
+        new_list.append(os.path.basename(fDestination).split('/')[-1])
+
+    # res = os.listdir(folder)
+    print("new list: \n")
+    print(new_list)
     return sorted(new_list)
 
 def split_text(lst):
@@ -48,7 +52,7 @@ def split_text(lst):
 
     for i in range(len(lst)):
 
-        if lst[i].strip().startswith(f'patcheskey'):
+        if lst[i].strip().startswith(f'{SORTINGNAME}'):
             start_index = i + 1
             break
 
@@ -82,7 +86,7 @@ def rename_strings_settings(list_new_names):
     updated_list = list()
     not_updated_list = list()
 
-    fullname = os.path.join("custom/customization2.yaml")
+    fullname = os.path.join(CONFIGFILE)
     fullname_backup = fullname + '.back'
 
     os.rename(fullname, fullname_backup)
@@ -101,31 +105,35 @@ def rename_strings_settings(list_new_names):
     with open(fullname_backup, "r") as output:
         data = yaml.safe_load(output)
 
-        # full_list = data['patcheskey']
+        # full_list = data["{SORTINGNAME}"]
+        print(f"print_full_list: \n {full_list}")
+
+        print(f"print_list_names: \n {list_new_names}")
 
         for itemdata in full_list:
 
-            itemdata_file = os.path.split(itemdata)[1]
-            correct_itemdata = make_corrections(itemdata_file,DIRNAME)
-            fDestination = "{}/{}".format(DIRNAME, correct_itemdata)
+            correct_itemdata = make_corrections(itemdata)
+            fDestination = correct_itemdata
             count=count+1
 
-            if fDestination in list_new_names:
+            if fDestination.strip("\'\" -/.") in list_new_names:
                 print("\n {} identical: ".format(count))
                 print(fDestination)
                 # Add to the list
-                updated_list.append(f"- {fDestination}")
-
+                filepatch = DIRNAME.rsplit('/', 1)[1]
+                print(f" filepatch: {filepatch}")
+                fixedline = fDestination.replace(fDestination.strip("\'\" -/."), filepatch+"/"+fDestination.strip("\'\" -/."))
+                updated_list.append(fixedline)
             else:
                 print("\n {} not identical: ".format(count))
                 print(fDestination)
                 not_updated_list.append(itemdata)
 
     final_list = not_updated_list + updated_list
-    print(f"updated list: \n {starttext} {final_list} {endtext}")
+    print(f"updated list: \n {final_list}")
     newfile = '\n'.join(starttext + final_list + endtext)
 
-    with open('custom/customization2.yaml', 'w', encoding='utf-8') as file:
+    with open(CONFIGFILE, 'w', encoding='utf-8') as file:
         file.write(str(newfile))
 
     if os.path.isfile(fullname_backup):

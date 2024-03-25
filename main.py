@@ -60,8 +60,8 @@ def renaming(old_filenames: list, search: str, index: int) -> dict:
         if BAD_DELIMITER in filename or filename[index:] == search:
             new_filename = create_new_filename(filename, search, index)
             if new_filename in old_filenames:
-                message = (f'File "{filename}" is not renamed, because file "{new_filename}" '
-                           f'is already in "{PATH_TO_RENAMING}"\n')
+                message = (f'ATTENTION: File "{filename}" is not renamed, because file '
+                           f'"{new_filename}" is already in "{PATH_TO_RENAMING}"\n')
                 print(message)
                 with open(''.join((PATH_TO_LOG, ERRLOGFILE)), 'a', encoding='utf-8') as ouf:
                     print(message, file=ouf)
@@ -108,7 +108,7 @@ def division_into_three_parts(lst: list) -> tuple:
 
     second = lst[start_index:end_index]
 
-    third = list()
+    third = []
 
     # move all spaces from the end of the list to the beginning of the next block
     for i in range(len(second) - 1, -1, -1):
@@ -133,18 +133,18 @@ def change_yaml(processed: dict):
                  for old, new in processed.items()}
 
     with open(fullname, encoding='utf-8') as inf:
-        lines = [line.rstrip('\n') for line in inf]
+        lines = inf.readlines()
 
     before, middle, after = division_into_three_parts(lines)
 
-    not_processed = [line for line in middle if line.strip("\'\" -/.") not in processed]
+    not_processed = [line for line in middle if line.strip("\'\" -/.\n") not in processed]
 
-    was_processed = [line.replace(line.strip("\'\" -"), processed[line.strip("\'\" -/.")])
-                     for line in middle if line.strip("\'\" -/.") in processed]
+    was_processed = [line.replace(line.strip("\'\" -\n"), processed[line.strip("\'\" -/.\n")])
+                     for line in middle if line.strip("\'\" -/.\n") in processed]
 
     middle = not_processed + was_processed
 
-    text = '\n'.join(before + middle + after)
+    text = ''.join(before + middle + after)
     with open(fullname, 'w', encoding='utf-8') as ouf:
         ouf.write(text)
 

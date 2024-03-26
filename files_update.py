@@ -32,7 +32,7 @@ def rename_files(folder):
     """
 
     counter = 0
-    new_list = list()
+    new_list = []
     # Iterate
     for file in os.listdir(folder):
 
@@ -83,7 +83,7 @@ def split_text(lst):
 
     second = lst[start_index:end_index]
 
-    third = list()
+    third = []
 
     # move all spaces from the end of the list to the beginning of the next block
     for i in range(len(second) - 1, -1, -1):
@@ -100,8 +100,8 @@ def rename_strings_settings(list_new_names):
     Update list with a files regarding to updated names and subfolders
     """
     count = 0
-    updated_list = list()
-    not_updated_list = list()
+    updated_list = []
+    not_updated_list = []
 
     fullname = os.path.join(CONFIGFILE)
     fullname_backup = fullname + '.back'

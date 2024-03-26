@@ -14,7 +14,10 @@ SORTINGNAME = "patcheskey"
 CONFIGFILE = "custom/customization2.yaml"
 
 def make_corrections(filename):
-    # Make correction to filenames with a patterns in name, and replace underscore with a dush
+    """
+    Make correction to filenames with a patterns in name, and replace underscore with a dush
+    """
+
     suffix_name1 = filename.replace ("_", "-")
     suffix_name2 = suffix_name1.replace ("-patch.yaml", ".yaml")
     new_name = suffix_name2.replace (".patch.yaml", ".yaml")
@@ -24,7 +27,9 @@ def make_corrections(filename):
 
 
 def rename_files(folder):
-    # Rename files in subfolder DIRNAME with a patterns in make_corrections
+    """
+    Rename files in subfolder DIRNAME with a patterns in make_corrections
+    """
 
     counter = 0
     new_list = list()
@@ -53,7 +58,9 @@ def rename_files(folder):
     return sorted(new_list)
 
 def split_text(lst):
-    # split text for a three parts, for achieve ability to modify a second one
+    """
+    Split text for a three parts, for achieve ability to modify a second one
+    """
     start_index = 0
     end_index = 0
 
@@ -89,6 +96,9 @@ def split_text(lst):
     return first, second, third
 
 def rename_strings_settings(list_new_names):
+    """
+    Update list with a files regarding to updated names and subfolders
+    """
     count = 0
     updated_list = list()
     not_updated_list = list()

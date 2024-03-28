@@ -146,8 +146,11 @@ def rename_strings_settings(list_new_names):
                 print(fDestination)
                 not_updated_list.append(itemdata)
 
+    # sorting updated list
+    updated_list.sort()
+
     final_list = not_updated_list + updated_list
-    print(f"updated list: \n {final_list}")
+    # print(f"updated list: \n {final_list}")
     newfile = '\n'.join(starttext + final_list + endtext)
 
     with open(CONFIGFILE, 'w', encoding='utf-8') as file:

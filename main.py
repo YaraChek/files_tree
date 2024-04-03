@@ -129,8 +129,9 @@ def special_sorting(lst: list) -> list:
     :param lst: filenames list
     :return: processed filenames list
     """
-    root = [elem for elem in lst if elem.count('\\') < 2]
-    subdirectories = [elem for elem in lst if elem.count('\\') > 1]
+    root = [elem for elem in lst if elem.count('/') < 2]
+    root.sort()
+    subdirectories = [elem for elem in lst if elem.count('/') > 1]
     root.extend(sorted(subdirectories))
     return root
 

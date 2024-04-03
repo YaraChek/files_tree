@@ -1,6 +1,12 @@
+#!/usr/bin/env python3
+"""
+This file work with files location and listing of the file. With this script its possible
+to update the names of the files in folder and also compare and update names in config
+"""
+
 import os
-import yaml
 import re
+import yaml
 # import ruamel.yaml
 
 DIRNAME = r"./second_work_directory"
@@ -8,38 +14,43 @@ SORTINGNAME = "patcheskey"
 CONFIGFILE = "custom/customization2.yaml"
 
 def make_corrections(filename):
-        # Make correction to filenames with a patterns in name, and replace underscore with a dush
-        suffixName1 = filename.replace ("_", "-")
-        suffixName2 = suffixName1.replace ("-patch.yaml", ".yaml")
-        newName = suffixName2.replace (".patch.yaml", ".yaml")
+    """
+    Make correction to filenames with a patterns in name, and replace underscore with a dush
+    """
 
-        # print(f"renamed file: - {newName}")
-        return newName
+    suffix_name1 = filename.replace ("_", "-")
+    suffix_name2 = suffix_name1.replace ("-patch.yaml", ".yaml")
+    new_name = suffix_name2.replace (".patch.yaml", ".yaml")
+
+    # print(f"renamed file: - {new_name}")
+    return new_name
 
 
 def rename_files(folder):
-    # Rename files in subfolder DIRNAME with a patterns in make_corrections
+    """
+    Rename files in subfolder DIRNAME with a patterns in make_corrections
+    """
 
     counter = 0
-    new_list = list()
+    new_list = []
     # Iterate
     for file in os.listdir(folder):
 
         correct_filename = make_corrections(file)
 
         counter=counter+1
-        print("{}. old file: {}".format(counter, file))
-        print("{}. new file: {}\n".format(counter, correct_filename))
+        print(f"{counter}. old file: {file}")
+        print(f"{counter}. new file: {correct_filename}\n")
 
         # Rename the file
-        fSource = "{}/{}".format(folder, file)
-        # print(fSource)
-        fDestination = "{}/{}".format(folder, correct_filename)
+        file_source = "{}/{}".format(folder, file)
+        # print(file_source)
+        file_destination = "{}/{}".format(folder, correct_filename)
         # print(fDestination)
-        os.rename(fSource, fDestination)
+        os.rename(file_source, file_destination)
 
         # print(file)
-        new_list.append(os.path.basename(fDestination).split('/')[-1])
+        new_list.append(os.path.basename(file_destination).split('/')[-1])
 
     # res = os.listdir(folder)
     print("new list: \n")
@@ -47,6 +58,9 @@ def rename_files(folder):
     return sorted(new_list)
 
 def split_text(lst):
+    """
+    Split text for a three parts, for achieve ability to modify a second one
+    """
     start_index = 0
     end_index = 0
 
@@ -69,7 +83,7 @@ def split_text(lst):
 
     second = lst[start_index:end_index]
 
-    third = list()
+    third = []
 
     # move all spaces from the end of the list to the beginning of the next block
     for i in range(len(second) - 1, -1, -1):
@@ -82,16 +96,19 @@ def split_text(lst):
     return first, second, third
 
 def rename_strings_settings(list_new_names):
+    """
+    Update list with a files regarding to updated names and subfolders
+    """
     count = 0
-    updated_list = list()
-    not_updated_list = list()
+    updated_list = []
+    not_updated_list = []
 
     fullname = os.path.join(CONFIGFILE)
     fullname_backup = fullname + '.back'
 
     os.rename(fullname, fullname_backup)
 
-    with open(fullname_backup, 'r') as listfile:
+    with open(fullname_backup, 'r', encoding='utf-8') as listfile:
         lines = [line.rstrip('\n') for line in listfile]
         # print(lines)
 
@@ -102,7 +119,7 @@ def rename_strings_settings(list_new_names):
         exit()
 
     # Read the YAML file
-    with open(fullname_backup, "r") as output:
+    with open(fullname_backup, "r", encoding='utf-8') as output:
         data = yaml.safe_load(output)
 
         # full_list = data["{SORTINGNAME}"]
@@ -117,7 +134,7 @@ def rename_strings_settings(list_new_names):
             count=count+1
 
             if fDestination.strip("\'\" -/.") in list_new_names:
-                print("\n {} identical: ".format(count))
+                print(f"\n {count} identical: ")
                 print(fDestination)
                 # Add to the list
                 filepatch = DIRNAME.rsplit('/', 1)[1]
@@ -125,12 +142,15 @@ def rename_strings_settings(list_new_names):
                 fixedline = fDestination.replace(fDestination.strip("\'\" -/."), filepatch+"/"+fDestination.strip("\'\" -/."))
                 updated_list.append(fixedline)
             else:
-                print("\n {} not identical: ".format(count))
+                print(f"\n {count} not identical: ")
                 print(fDestination)
                 not_updated_list.append(itemdata)
 
+    # sorting updated list
+    updated_list.sort()
+
     final_list = not_updated_list + updated_list
-    print(f"updated list: \n {final_list}")
+    # print(f"updated list: \n {final_list}")
     newfile = '\n'.join(starttext + final_list + endtext)
 
     with open(CONFIGFILE, 'w', encoding='utf-8') as file:
@@ -138,7 +158,6 @@ def rename_strings_settings(list_new_names):
 
     if os.path.isfile(fullname_backup):
         os.remove(fullname_backup)
-
 
 
 if __name__ == '__main__':

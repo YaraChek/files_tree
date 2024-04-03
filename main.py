@@ -13,9 +13,9 @@ import os
 import re
 import yaml
 
-settings_file = './presets/settings_rename_files.yaml'
+SETTINGS_FILE = './presets/settings_rename_files.yaml'
 
-with open(settings_file, encoding='utf-8') as presets:
+with open(SETTINGS_FILE, encoding='utf-8') as presets:
     config = yaml.load(presets, Loader=yaml.FullLoader)
 
 PATH_TO_RENAMING = config['path-to-renaming']      # path to files to be renamed
@@ -121,6 +121,20 @@ def division_into_three_parts(lst: list) -> tuple:
     return first, second, third
 
 
+def special_sorting(lst: list) -> list:
+    """
+    The function puts files located in the root directory at the beginning of the list.
+    The second part of the list will be an alphabetically sorted list of files indicating
+    subdirectories.
+    :param lst: filenames list
+    :return: processed filenames list
+    """
+    root = [elem for elem in lst if elem.count('\\') < 2]
+    subdirectories = [elem for elem in lst if elem.count('\\') > 1]
+    root.extend(sorted(subdirectories))
+    return root
+
+
 def change_yaml(processed: dict):
     """
     Overwrites yaml-file: renamed old filenames will be deleted from file list,
@@ -129,8 +143,8 @@ def change_yaml(processed: dict):
     fullname = os.path.join(PATH_TO_CUSTOM, CUSTOMIZATION_FILE)
 
     # keep only the last directory in the relative file names
-    processed = {old: '/'.join(('.', '/'.join(processed[old].split('/')[-2:])))
-                 for old, new in processed.items()}
+    processed = {name: '/'.join(('.', '/'.join(processed[name].split('/')[-2:])))
+                 for name in processed.keys()}
 
     with open(fullname, encoding='utf-8') as inf:
         lines = inf.readlines()
@@ -143,6 +157,7 @@ def change_yaml(processed: dict):
                      for line in middle if line.strip("\'\" -/.\n") in processed]
 
     middle = not_processed + was_processed
+    middle = special_sorting(middle)
 
     text = ''.join(before + middle + after)
     with open(fullname, 'w', encoding='utf-8') as ouf:

@@ -109,7 +109,6 @@ def rename_strings_settings(list_new_names):
     os.rename(fullname, fullname_backup)
 
     with open(fullname_backup, 'r', encoding='utf-8') as listfile:
-        # lines = [line.rstrip('\n') for line in listfile]
         lines = listfile.readlines()
         # print(lines)
 
@@ -152,7 +151,6 @@ def rename_strings_settings(list_new_names):
 
     final_list = not_updated_list + updated_list
     # print(f"updated list: \n {final_list}")
-    # newfile = '\n'.join(starttext + final_list + endtext)
     newfile = ''.join(starttext + final_list + endtext)
 
     with open(CONFIGFILE, 'w', encoding='utf-8') as file:

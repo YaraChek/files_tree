@@ -6,7 +6,7 @@ Underscores are replaced with dashes. The word “patch” at the end of the nam
 The script displays information about non-renamed *problematic* files to the terminal and writes
 it to the log file.
 Then it overwrites yaml-file: deletes renamed old filenames from the file list and adds new
-filenames to the end of the file list.
+filenames to the end of the file list. Test test
 """
 
 import os
